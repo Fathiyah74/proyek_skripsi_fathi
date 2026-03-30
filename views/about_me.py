@@ -32,5 +32,5 @@ with col2:
 
     if st.button("🔍 **Cek Waktu Salat**", use_container_width=True, type="secondary" \
     ""):
-        st.switch_page("views/Waktu_Salat.py")
+        st.page_link("views/waktu_salat.py", label="➡️ Perhitungan Waktu Salat")
 
