@@ -30,7 +30,5 @@ with col2:
     st.image("./assets/Logo_Website.png", width=100)  # Visual Matahari
 
 
-    if st.button("🔍 **Cek Waktu Salat**", use_container_width=True, type="secondary" \
-    ""):
-        st.page_link("views/waktu_salat.py", label="➡️ Perhitungan Waktu Salat")
+    st.page_link("views/waktu_salat.py", label="🔍 Cek Waktu Salat", use_container_width=True)
 
