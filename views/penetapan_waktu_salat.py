@@ -9,18 +9,16 @@ st.write("اِنَّ الصَّلٰوةَ كَانَتْ عَلَى الْمُؤ
 layout="centered"
 # --- BATASAN WAKTU SALAT SECARA FIQH DAN ASTRONOMI ---
 st.write("\n")
-st.subheader("Batasan Waktu Salat", anchor=False)
+st.subheader("Awal Waktu Salat dalam Perspektif Ilmu ", anchor=False)
 
 st.markdown(
     """
     <div style="text-align: justify; line-height: 1.8;">
-    Penentuan awal waktu salat dalam aplikasi ini mengacu pada dua pendekatan utama, yaitu pendekatan fiqh dan pendekatan astronomi.
-    Dalam fiqh, awal waktu salat ditentukan berdasarkan tanda-tanda alam seperti tergelincirnya Matahari, panjang bayangan, terbenamnya Matahari,
-    serta munculnya fajar. Sedangkan dalam astronomi, tanda-tanda tersebut diterjemahkan menjadi parameter posisi Matahari terhadap ufuk,
-    khususnya nilai ketinggian (altitude) Matahari dalam satuan derajat.
+    Penentuan awal waktu salat dalam aplikasi ***Salat_F*** disusun berdasarkan prinsip-prinsip Ilmu Falak yang menjadikan fenomena harian Matahari sebagai dasar utama dalam penentuan waktu ibadah. 
+    Para ulama falak dalam menyusun jadwal waktu salat berangkat dari hadis-hadis Nabi yang menjelaskan bahwa awal waktu salat ditandai oleh perubahan posisi Matahari, seperti tergelincirnya Matahari dari meridian,
+    perubahan panjang bayangan, terbenamnya Matahari, hilangnya syafak, serta munculnya fajar.
     <br><br>
-    Karena terdapat perbedaan pendapat ulama dan lembaga hisab dalam menetapkan batas sudut Matahari, maka nilai yang digunakan dalam aplikasi ini
-    mengikuti standar yang umum digunakan di Indonesia berpatokan pada perhitungan Kementerian Agama RI.
+    Dengan demikian aplikasi ***Salat_F*** memanfaatkan konsep astronomi praktis untuk menerjemahkan tanda-tanda syar’i tersebut ke dalam bentuk perhitungan yang dapat diterapkan dengan menggunakan fungsi ***find discrete***.
     </div>
     """,
     unsafe_allow_html=True
@@ -28,15 +26,20 @@ st.markdown(
 st.divider()
 
 # --- ZUHUR ---
-st.markdown("### Waktu Zuhur")
+st.markdown("### Awal Waktu Zuhur")
 st.markdown(
     """ 
     <div style="text-align: justify; line-height: 1.8;">
-    Waktu Zuhur dimulai ketika Matahari tergelincir dari titik kulminasi (zawal), yaitu saat Matahari melewati posisi tertinggi di langit
-    dan mulai bergerak ke arah barat. Secara astronomis, peristiwa ini berkaitan dengan transit Matahari pada meridian lokal.
+    Awal waktu Zuhur dimulai ketika Matahari telah tergelincir dari garis meridian setelah mencapai titik kulminasi atas (transit). Dalam hisab falak klasik, waktu transit dapat ditentukan menggunakan rumus:
     <br><br>
-    Dalam praktik hisab, waktu Zuhur sering diberikan tambahan beberapa menit sebagai bentuk kehati-hatian (ihtiyath) agar benar-benar masuk waktu.
-    Waktu Zuhur berakhir ketika panjang bayangan suatu benda sama dengan tinggi bendanya, ditambah panjang bayangan saat kulminasi.
+    WH = 12 – e + (λʷ – λ) / 15
+    <br><br>
+    Namun dalam aplikasi ini, penentuan waktu Zuhur dilakukan dengan bantuan metode find_discrete. 
+    Aplikasi mencari peristiwa transit Matahari berdasarkan status ketika Matahari tepat melintasi meridian. 
+    Waktu yang dihasilkan merupakan waktu ketika pusat piringan Matahari berimpit dengan meridian.
+    <br><br>
+    Untuk memastikan bahwa Matahari telah benar-benar tergelincir sebagaimana kehati-hatian dalam fiqh,
+    maka aplikasi menambahkan nilai ihtiyat sebesar 2 menit setelah transit sebagai penetapan masuk waktu Zuhur.
     </div>
     """,
     unsafe_allow_html=True
@@ -44,15 +47,23 @@ st.markdown(
 st.divider()
 
 # --- ASAR ---
-st.markdown("### Waktu Asar")
+st.markdown("### Awal Waktu Asar")
 st.markdown(
     """ 
     <div style="text-align: justify; line-height: 1.8;">
-    Waktu Asar dimulai ketika panjang bayangan suatu benda sama dengan tinggi bendanya, ditambah bayangan saat kulminasi (menurut jumhur ulama).
-    Perhitungan ini dipengaruhi oleh lintang tempat dan deklinasi Matahari, sehingga waktu Asar dapat berubah-ubah sepanjang tahun.
+    Awal waktu Asar ditandai ketika panjang bayangan suatu benda sama dengan satu kali tinggi benda ditambah panjang bayangan ketika transit (menurut jumhur ulama). 
+    Secara astronomis, kondisi tersebut diterjemahkan dalam bentuk sudut ketinggian Matahari.
     <br><br>
-    Dalam astronomi, kondisi tersebut dapat dihitung berdasarkan sudut elevasi Matahari yang menyebabkan bayangan mencapai nilai tertentu.
-    Beberapa mazhab memiliki perbedaan dalam menentukan batas bayangan, sehingga hasil hisab dapat berbeda tergantung metode yang digunakan.
+    Dalam aplikasi ini digunakan prinsip perhitungan:
+    <br><br>
+    **cot h = tan |φ – δ| + 1**
+    <br><br>
+    dengan:<br>
+    h = altitude Matahari saat Asar<br>
+    φ = lintang tempat<br>
+    δ = deklinasi Matahari<br>
+    <br><br>
+    Dalam implementasi aplikasi, nilai altitude Asar dihitung secara dinamis berdasarkan lintang tempat dan deklinasi Matahari yang diperoleh dari ephemeris (DE).
     </div>
     """,
     unsafe_allow_html=True
