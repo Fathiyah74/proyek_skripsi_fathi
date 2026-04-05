@@ -79,10 +79,10 @@ st.markdown(
     Karena Maghrib berpatokan langsung pada piringan Matahari, maka perhitungan altitude Matahari pada saat terbenam harus mempertimbangkan koreksi astronomis, yaitu:<br>
     1. Refraksi atmosfer<br>
     2. Semi diameter Matahari<br>
-    3. Kerendahan ufuk akibat elevasi lokasi<br>
-    Dengan demikian, ketinggian Matahari yang digunakan adalah tinggi ufuk mar’i (ufuk yang tampak). 
-    Dalam aplikasi ini digunakan pendekatan praktis yang lazim dipakai di Indonesia, yaitu dengan menetapkan altitude Matahari:
+    3. Kerendahan ufuk akibat elevasi lokasi
     <br><br>
+    Dengan demikian, ketinggian Matahari yang digunakan adalah tinggi ufuk mar’i (ufuk yang tampak). 
+    Dalam aplikasi ini digunakan pendekatan praktis yang lazim dipakai di Indonesia, yaitu dengan menetapkan altitude Matahari:<br>
     h₀ = -1°
     <br><br>
     Menurut Thomas Djamaluddin, nilai -1° telah mencukupi untuk perhitungan awal waktu Maghrib di wilayah Indonesia. 
