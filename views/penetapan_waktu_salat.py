@@ -14,11 +14,11 @@ st.subheader("Awal Waktu Salat dalam Perspektif Ilmu ", anchor=False)
 st.markdown(
     """
     <div style="text-align: justify; line-height: 1.8;">
-    Penentuan awal waktu salat dalam aplikasi ***Salat_F*** disusun berdasarkan prinsip-prinsip Ilmu Falak yang menjadikan fenomena harian Matahari sebagai dasar utama dalam penentuan waktu ibadah. 
+    Penentuan awal waktu salat dalam aplikasi Salat_F disusun berdasarkan prinsip-prinsip Ilmu Falak yang menjadikan fenomena harian Matahari sebagai dasar utama dalam penentuan waktu ibadah. 
     Para ulama falak dalam menyusun jadwal waktu salat berangkat dari hadis-hadis Nabi yang menjelaskan bahwa awal waktu salat ditandai oleh perubahan posisi Matahari, seperti tergelincirnya Matahari dari meridian,
     perubahan panjang bayangan, terbenamnya Matahari, hilangnya syafak, serta munculnya fajar.
     <br><br>
-    Dengan demikian aplikasi ***Salat_F*** memanfaatkan konsep astronomi praktis untuk menerjemahkan tanda-tanda syar’i tersebut ke dalam bentuk perhitungan yang dapat diterapkan dengan menggunakan fungsi ***find discrete***.
+    Dengan demikian aplikasi Salat_F memanfaatkan konsep astronomi praktis untuk menerjemahkan tanda-tanda syar’i tersebut ke dalam bentuk perhitungan yang dapat diterapkan dengan menggunakan fungsi find discrete.
     </div>
     """,
     unsafe_allow_html=True
@@ -54,14 +54,12 @@ st.markdown(
     Awal waktu Asar ditandai ketika panjang bayangan suatu benda sama dengan satu kali tinggi benda ditambah panjang bayangan ketika transit (menurut jumhur ulama). 
     Secara astronomis, kondisi tersebut diterjemahkan dalam bentuk sudut ketinggian Matahari.
     <br><br>
-    Dalam aplikasi ini digunakan prinsip perhitungan:
-    <br><br>
-    **cot h = tan |φ – δ| + 1**
-    <br><br>
+    Dalam aplikasi ini digunakan prinsip perhitungan:<br>
+    cot h = tan |φ – δ| + 1<br>
     dengan:<br>
     h = altitude Matahari saat Asar<br>
     φ = lintang tempat<br>
-    δ = deklinasi Matahari<br>
+    δ = deklinasi Matahari
     <br><br>
     Dalam implementasi aplikasi, nilai altitude Asar dihitung secara dinamis berdasarkan lintang tempat dan deklinasi Matahari yang diperoleh dari ephemeris (DE).
     </div>
@@ -72,16 +70,23 @@ st.markdown(
 st.divider()
 
 # --- MAGHRIB ---
-st.markdown("### Waktu Maghrib")
+st.markdown("### Awal Waktu Maghrib")
 st.markdown(
     """ 
     <div style="text-align: justify; line-height: 1.8;">
-    Waktu Maghrib dimulai saat Matahari terbenam, yaitu ketika seluruh piringan Matahari telah berada di bawah ufuk barat.
-    Dalam perhitungan astronomi, fenomena ini dipengaruhi oleh refraksi atmosfer dan diameter Matahari,
-    sehingga ketinggian Matahari pada saat terbenam tidak tepat berada di 0°.
+    Awal waktu Maghrib dimulai ketika Matahari terbenam, yaitu saat piringan Matahari menghilang dari ufuk pengamat. Dalam fiqh, Maghrib ditandai dengan hilangnya seluruh piringan Matahari.
     <br><br>
-    Secara umum, waktu terbenam Matahari dalam hisab dihitung saat posisi Matahari berada sekitar -1° di bawah ufuk.
-    Waktu Maghrib berakhir ketika cahaya merah di langit barat (syafaq) telah hilang.
+    Karena Maghrib berpatokan langsung pada piringan Matahari, maka perhitungan altitude Matahari pada saat terbenam harus mempertimbangkan koreksi astronomis, yaitu:<br>
+    Refraksi atmosfer<br>
+    Semi diameter Matahari<br>
+    Kerendahan ufuk akibat elevasi lokasi<br>
+    Dengan demikian, ketinggian Matahari yang digunakan adalah tinggi ufuk mar’i (ufuk yang tampak). 
+    Dalam aplikasi ini digunakan pendekatan praktis yang lazim dipakai di Indonesia, yaitu dengan menetapkan altitude Matahari:
+    <br><br>
+    h₀ = -1°
+    <br><br>
+    Menurut Thomas Djamaluddin, nilai -1° telah mencukupi untuk perhitungan awal waktu Maghrib di wilayah Indonesia. 
+    Koreksi tinggi tempat menjadi signifikan hanya pada lokasi yang sangat tinggi seperti puncak gunung atau gedung tinggi yang memiliki ufuk langsung ke laut.
     </div>
     """,
     unsafe_allow_html=True
@@ -90,16 +95,18 @@ st.markdown(
 st.divider()
 
 # --- ISYA ---
-st.markdown("### Waktu Isya")
+st.markdown("### Awal Waktu Isya")
 st.markdown(
     """ 
     <div style="text-align: justify; line-height: 1.8;">
-    Waktu Isya dimulai saat hilangnya cahaya merah di langit barat (syafaq ahmar), yang menandakan masuknya malam.
-    Dalam astronomi, kondisi ini berkaitan dengan berakhirnya senja astronomi, yaitu ketika Matahari berada pada posisi tertentu di bawah ufuk.
+    Awal waktu Isya dimulai ketika hilangnya cahaya syafak (mega merah) dan berakhir saat masuk waktu Subuh. 
+    Secara astronomis, hilangnya syafak terjadi karena posisi Matahari semakin jauh berada di bawah ufuk sehingga hamburan cahaya senja tidak lagi terlihat.
     <br><br>
-    Di Indonesia, standar yang umum digunakan adalah ketika Matahari berada sekitar -18° di bawah ufuk.
-    Perbedaan standar sudut dapat menyebabkan perbedaan hasil beberapa menit antar metode hisab.
-    Waktu Isya berlangsung hingga pertengahan malam.
+    Dalam aplikasi ini, awal waktu Isya ditetapkan ketika Matahari berada pada ketinggian:
+    <br><br>
+    h₀ = -18°
+    <br><br>
+    Nilai tersebut merupakan standar yang banyak digunakan oleh Kementerian Agama Republik Indonesia.
     </div>
     """,
     unsafe_allow_html=True
@@ -108,15 +115,18 @@ st.markdown(
 st.divider()
 
 # --- SUBUH ---
-st.markdown("### Waktu Subuh")
+st.markdown("### Awal Waktu Subuh")
 st.markdown(
     """ 
     <div style="text-align: justify; line-height: 1.8;">
-    Waktu Subuh dimulai sejak terbitnya fajar shadiq, yaitu cahaya putih yang muncul secara horizontal di ufuk timur sebelum Matahari terbit.
-    Dalam astronomi, peristiwa ini ditentukan berdasarkan posisi Matahari yang berada beberapa derajat di bawah ufuk timur.
+    Awal waktu Subuh dimulai ketika muncul fajar ṣādiq dan berakhir ketika Matahari terbit. 
+    Secara astronomis, fajar ṣādiq terjadi karena adanya hamburan cahaya Matahari di atmosfer ketika Matahari masih berada di bawah ufuk timur.
     <br><br>
-    Dalam praktik di Indonesia, awal Subuh umumnya menggunakan standar Matahari sekitar -20° di bawah ufuk.
-    Nilai ini dapat berbeda antar negara atau lembaga falak. Waktu Subuh berakhir saat Matahari mulai terbit.
+    Dalam aplikasi ini, awal waktu Subuh mengikuti standar yang digunakan oleh Kementerian Agama Republik Indonesia, yaitu ketika Matahari berada pada ketinggian:
+    <br><br>
+    h₀ = -20°
+    <br><br>
+    Nilai ini dipilih karena masih menjadi rujukan resmi dalam penyusunan jadwal waktu salat di Indonesia.
     </div>
     """,
     unsafe_allow_html=True
