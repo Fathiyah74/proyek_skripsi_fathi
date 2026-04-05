@@ -9,7 +9,7 @@ st.write("اِنَّ الصَّلٰوةَ كَانَتْ عَلَى الْمُؤ
 layout="centered"
 # --- BATASAN WAKTU SALAT SECARA FIQH DAN ASTRONOMI ---
 st.write("\n")
-st.subheader("Awal Waktu Salat dalam Perspektif Ilmu ", anchor=False)
+st.subheader("Awal Waktu Salat dalam Perspektif Ilmu Falak ", anchor=False)
 
 st.markdown(
     """
@@ -77,9 +77,9 @@ st.markdown(
     Awal waktu Maghrib dimulai ketika Matahari terbenam, yaitu saat piringan Matahari menghilang dari ufuk pengamat. Dalam fiqh, Maghrib ditandai dengan hilangnya seluruh piringan Matahari.
     <br><br>
     Karena Maghrib berpatokan langsung pada piringan Matahari, maka perhitungan altitude Matahari pada saat terbenam harus mempertimbangkan koreksi astronomis, yaitu:<br>
-    Refraksi atmosfer<br>
-    Semi diameter Matahari<br>
-    Kerendahan ufuk akibat elevasi lokasi<br>
+    1. Refraksi atmosfer<br>
+    2. Semi diameter Matahari<br>
+    3. Kerendahan ufuk akibat elevasi lokasi<br>
     Dengan demikian, ketinggian Matahari yang digunakan adalah tinggi ufuk mar’i (ufuk yang tampak). 
     Dalam aplikasi ini digunakan pendekatan praktis yang lazim dipakai di Indonesia, yaitu dengan menetapkan altitude Matahari:
     <br><br>
@@ -102,8 +102,7 @@ st.markdown(
     Awal waktu Isya dimulai ketika hilangnya cahaya syafak (mega merah) dan berakhir saat masuk waktu Subuh. 
     Secara astronomis, hilangnya syafak terjadi karena posisi Matahari semakin jauh berada di bawah ufuk sehingga hamburan cahaya senja tidak lagi terlihat.
     <br><br>
-    Dalam aplikasi ini, awal waktu Isya ditetapkan ketika Matahari berada pada ketinggian:
-    <br><br>
+    Dalam aplikasi ini, awal waktu Isya ditetapkan ketika Matahari berada pada ketinggian:<br>
     h₀ = -18°
     <br><br>
     Nilai tersebut merupakan standar yang banyak digunakan oleh Kementerian Agama Republik Indonesia.
@@ -122,8 +121,7 @@ st.markdown(
     Awal waktu Subuh dimulai ketika muncul fajar ṣādiq dan berakhir ketika Matahari terbit. 
     Secara astronomis, fajar ṣādiq terjadi karena adanya hamburan cahaya Matahari di atmosfer ketika Matahari masih berada di bawah ufuk timur.
     <br><br>
-    Dalam aplikasi ini, awal waktu Subuh mengikuti standar yang digunakan oleh Kementerian Agama Republik Indonesia, yaitu ketika Matahari berada pada ketinggian:
-    <br><br>
+    Dalam aplikasi ini, awal waktu Subuh mengikuti standar yang digunakan oleh Kementerian Agama Republik Indonesia, yaitu ketika Matahari berada pada ketinggian:<br>
     h₀ = -20°
     <br><br>
     Nilai ini dipilih karena masih menjadi rujukan resmi dalam penyusunan jadwal waktu salat di Indonesia.
