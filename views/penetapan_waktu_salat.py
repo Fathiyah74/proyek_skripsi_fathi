@@ -39,7 +39,7 @@ st.markdown(
     Waktu yang dihasilkan merupakan waktu ketika pusat piringan Matahari berimpit dengan meridian.
     <br><br>
     Untuk memastikan bahwa Matahari telah benar-benar tergelincir sebagaimana kehati-hatian dalam fiqh,
-    maka aplikasi menambahkan nilai ihtiyat sebesar 2 menit setelah transit sebagai penetapan masuk waktu Zuhur.
+    maka aplikasi menambahkan nilai ihtiyat sebesar 1 menit setelah transit sebagai penetapan masuk waktu Zuhur.
     </div>
     """,
     unsafe_allow_html=True
@@ -132,6 +132,17 @@ st.markdown(
 
 st.divider()
 
+st.markdown("## Informasi Umum")
+st.markdown(
+    """
+    - Hasil waktu salat langsung menyesaikan time zone yang digunakan<br>
+    - Hasil waktu salat tidak menggunakan waktu ihtiyat, kecuali waktu zuhur ditambah 1 menit untuk mengindikasikan tergelincirnya matahari dari meridian
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+st.divider()
 
 # --- KONTAK DEVELOPER ---
 st.markdown("### 📩 Hubungi Developer")
