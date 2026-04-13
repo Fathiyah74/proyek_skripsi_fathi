@@ -134,15 +134,27 @@ def hitung_salat(lat, lon, elev, tanggal, tz_name, ihtiyath=0):
         term = 1 + np.tan(abs(dec - lat_rad))
         h_asar = np.degrees(np.arctan(1/term))
 
+         # Rumus Tinggi Maghrib h ​= −(SD+R+Dip)
+        # Refraksi = (0°34') = 0.5667°
+        # Semi Diameter = (0°16') = 0.2667°
+        # Dip (Kerendahan Ufuk) = 1.76° akar elevasi
+
+        R = 34/60          # 0.5667 derajat
+        SD = 16/60         # 0.2667 derajat
+        Dip = 0.0293 * np.sqrt(elevation)
+
+        h_terbit = -(R + SD + Dip)     # tinggi matahari saat terbit
+        h_maghrib = -(R + SD + Dip)    # tinggi matahari saat maghrib
+
         s = np.zeros_like(alt)
 
         s[(~after) & (alt >= -20)] = 1
-        s[(~after) & (alt >= -1)] = 2
+        s[(~after) & (alt >= h_terbit)] = 2
         s[(~after) & (alt >= 4.5)] = 3
 
         s[(after)] = 4
         s[(after) & (alt <= h_asar)] = 5
-        s[(after) & (alt <= -1)] = 6
+        s[(after) & (alt <= h_maghrib)] = 6
         s[(after) & (alt <= -18)] = 7
 
         return s
