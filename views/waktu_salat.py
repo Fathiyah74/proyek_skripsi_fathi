@@ -9,7 +9,6 @@ from skyfield.searchlib import find_discrete
 
 from datetime import datetime, timedelta
 from pytz import timezone
-from datetime import datetime
 from timezonefinder import TimezoneFinder 
 
 # =============================
@@ -107,7 +106,7 @@ if "location" not in st.session_state:
 # PERHITUNGAN WAKTU SALAT
 # =============================
 
-def hitung_salat(lat, lon, elev, tanggal, tz_name):
+def hitung_salat(lat, lon, elev, tanggal, tz_name, ihtiyath=0):
 
     tz = timezone(tz_name)
 
@@ -162,16 +161,18 @@ def hitung_salat(lat, lon, elev, tanggal, tz_name):
         7:"Isya"
     }
 
+    delta_ihtiyath = timedelta(minutes=ihtiyath)
+
     hasil = {}
 
     for t,s in zip(times,states):
 
         if s in label:
 
-            waktu = t.astimezone(tz)
+            waktu = t.astimezone(tz) + delta_ihtiyath
 
             if s == 1:
-                hasil["Imsak"] = (waktu - timedelta(minutes=10)).strftime("%H:%M")
+                hasil["Imsak"] = (waktu - timedelta(minutes=10)).strftime("%H:%M:%S")
 
             hasil[label[s]] = waktu.strftime("%H:%M:%S")
 
@@ -274,6 +275,23 @@ Timezone : {loc['tz']}
 tanggal = st.date_input("Pilih Tanggal")
 
 # =============================
+# IHTIYATH
+# =============================
+
+use_ihtiyath = st.checkbox("Gunakan Ihtiyath", value=False)
+
+ihtiyath_menit = 0
+if use_ihtiyath:
+    ihtiyath_menit = st.number_input(
+        "Nilai Ihtiyath (menit)",
+        min_value=1,
+        max_value=5,
+        value=2,
+        help="Waktu pengaman ditambahkan ke seluruh jadwal salat (standar Kemenag: 1-2 menit)"
+    )
+
+
+# =============================
 # HITUNG
 # =============================
 
@@ -285,9 +303,15 @@ if st.button("Hitung Waktu Salat"):
         loc["alt"],
         tanggal,
         loc["tz"]
+        ihtiyath=ihtiyath_menit
     )
 
     st.subheader("Jadwal Salat")
+
+    expected = ["Imsak", "Subuh", "Terbit", "Duha", "Dzuhur", "Asar", "Maghrib", "Isya"]
+    missing = [name for name in expected if name not in jadwal]
+    if missing:
+        st.warning(f"Waktu berikut tidak ditemukan untuk lokasi/tanggal ini: {', '.join(missing)}")
 
     cols = st.columns(4)
 
