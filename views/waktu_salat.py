@@ -302,7 +302,7 @@ if st.button("Hitung Waktu Salat"):
         loc["lon"],
         loc["alt"],
         tanggal,
-        loc["tz"]
+        loc["tz"],
         ihtiyath=ihtiyath_menit
     )
 
