@@ -141,7 +141,7 @@ def hitung_salat(lat, lon, elev, tanggal, tz_name, ihtiyath=0):
 
         R = 34/60          # 0.5667 derajat
         SD = 16/60         # 0.2667 derajat
-        Dip = 0.0293 * np.sqrt(elevation)
+        Dip = 0.0293 * np.sqrt(elev)
 
         h_terbit = -(R + SD + Dip)     # tinggi matahari saat terbit
         h_maghrib = -(R + SD + Dip)    # tinggi matahari saat maghrib
