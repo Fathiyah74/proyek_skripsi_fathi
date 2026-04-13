@@ -30,16 +30,14 @@ st.markdown("### Awal Waktu Zuhur")
 st.markdown(
     """ 
     <div style="text-align: justify; line-height: 1.8;">
-    Awal waktu Zuhur dimulai ketika Matahari telah tergelincir dari garis meridian setelah mencapai titik kulminasi atas (transit). Dalam hisab falak klasik, waktu transit dapat ditentukan menggunakan rumus:
+    Awal waktu Zuhur dimulai ketika Matahari telah tergelincir dari garis meridian setelah mencapai titik kulminasi atas (transit).
+    Secara astronomis, kondisi ini terjadi ketika Matahari melintasi meridian lokal.
     <br><br>
-    WH = 12 – e + (λʷ – λ) / 15
+    Dalam aplikasi Salat_F, waktu Zuhur ditentukan menggunakan fungsi <b>find_discrete</b> dengan memanfaatkan kondisi perubahan azimuth dari sebelum kulminasi ke setelah kulminasi.
+    Pada kode, hal ini ditandai ketika nilai azimuth Matahari berubah melewati 180° (after = az > 180), sehingga state berubah menuju kondisi setelah transit.
     <br><br>
-    Namun dalam aplikasi ini, penentuan waktu Zuhur dilakukan dengan bantuan metode find_discrete. 
-    Aplikasi mencari peristiwa transit Matahari berdasarkan status ketika Matahari tepat melintasi meridian. 
-    Waktu yang dihasilkan merupakan waktu ketika pusat piringan Matahari berimpit dengan meridian.
-    <br><br>
-    Untuk memastikan bahwa Matahari telah benar-benar tergelincir sebagaimana kehati-hatian dalam fiqh,
-    maka aplikasi menambahkan nilai ihtiyat sebesar 1 menit setelah transit sebagai penetapan masuk waktu Zuhur.
+    Dengan demikian, waktu Zuhur yang dihasilkan merupakan waktu saat Matahari tepat berada di sekitar meridian.
+    Jika pengguna mengaktifkan opsi <i>ihtiyath</i>, maka aplikasi akan menambahkan nilai ihtiyath (dalam menit) pada seluruh hasil jadwal waktu salat sebagai bentuk kehati-hatian.
     </div>
     """,
     unsafe_allow_html=True
@@ -74,24 +72,30 @@ st.markdown("### Awal Waktu Maghrib")
 st.markdown(
     """ 
     <div style="text-align: justify; line-height: 1.8;">
-    Awal waktu Maghrib dimulai ketika Matahari terbenam, yaitu saat piringan Matahari menghilang dari ufuk pengamat. Dalam fiqh, Maghrib ditandai dengan hilangnya seluruh piringan Matahari.
+    Awal waktu Maghrib dimulai ketika Matahari terbenam, yaitu saat seluruh piringan Matahari menghilang dari ufuk pengamat. 
+    Dalam fiqh, masuknya waktu Maghrib ditandai dengan hilangnya piringan Matahari secara sempurna.
     <br><br>
-    Karena Maghrib berpatokan langsung pada piringan Matahari, maka perhitungan altitude Matahari pada saat terbenam harus mempertimbangkan koreksi astronomis, yaitu:<br>
-    1. Refraksi atmosfer<br>
-    2. Semi diameter Matahari<br>
-    3. Kerendahan ufuk akibat elevasi lokasi
+    Karena Maghrib berpatokan pada terbenamnya piringan Matahari, maka penentuan altitude Matahari saat terbenam perlu mempertimbangkan koreksi astronomis, yaitu:
+    <br>
+    1) Refraksi atmosfer (R)<br>
+    2) Semi diameter Matahari (SD)<br>
+    3) Kerendahan ufuk (Dip) akibat elevasi lokasi pengamat
     <br><br>
-    Dengan demikian, ketinggian Matahari yang digunakan adalah tinggi ufuk mar’i (ufuk yang tampak). 
-    Dalam aplikasi ini digunakan pendekatan praktis yang lazim dipakai di Indonesia, yaitu dengan menetapkan altitude Matahari:<br>
-    h₀ = -1°
+    Dalam aplikasi Salat_F, tinggi Matahari saat terbenam ditentukan menggunakan rumus:
     <br><br>
-    Menurut Thomas Djamaluddin, nilai -1° telah mencukupi untuk perhitungan awal waktu Maghrib di wilayah Indonesia. 
-    Koreksi tinggi tempat menjadi signifikan hanya pada lokasi yang sangat tinggi seperti puncak gunung atau gedung tinggi yang memiliki ufuk langsung ke laut.
+    <b>h = −(R + SD + Dip)</b>
+    <br><br>
+    dengan nilai R = 34' (0,5667°) dan SD = 16' (0,2667°).
+    Adapun nilai Dip dihitung menggunakan pendekatan:
+    <br><br>
+    <b>Dip = 0,0293 × √(elevasi)</b>
+    <br><br>
+    Elevasi (ketinggian tempat) dimasukkan oleh pengguna dalam satuan meter. 
+    Koreksi elevasi menjadi signifikan terutama pada lokasi yang memiliki ketinggian besar seperti daerah pegunungan atau bangunan tinggi.
     </div>
     """,
     unsafe_allow_html=True
 )
-
 st.divider()
 
 # --- ISYA ---
@@ -132,15 +136,47 @@ st.markdown(
 
 st.divider()
 
-st.markdown("## Informasi Umum")
+# --- TERBIT & DUHA ---
+st.markdown("### Waktu Terbit dan Duha")
 st.markdown(
-    """
-    - Hasil waktu salat langsung menyesaikan time zone yang digunakan<br>
-    - Hasil waktu salat tidak menggunakan waktu ihtiyat, kecuali waktu zuhur ditambah 1 menit untuk mengindikasikan tergelincirnya matahari dari meridian
+    """ 
+    <div style="text-align: justify; line-height: 1.8;">
+    Waktu Terbit dalam aplikasi Salat_F ditentukan ketika Matahari mulai muncul dari ufuk timur.
+    Untuk mendapatkan hasil yang sesuai dengan ufuk mar’i, aplikasi menggunakan batas altitude yang sama dengan terbenam Matahari, yaitu:
+    <br><br>
+    h = −(R + SD + Dip)
+    <br><br>
+    sehingga koreksi refraksi, semi diameter, dan dip horizon juga berlaku pada waktu terbit.
+    <br><br>
+    Adapun waktu Duha ditentukan ketika Matahari telah berada pada ketinggian:
+    <br><br>
+    h₀ = 4.5°
+    <br><br>
+    Nilai ini digunakan sebagai pendekatan praktis yang umum dipakai dalam kajian hisab falak untuk menandai masuknya waktu Duha.
     </div>
     """,
     unsafe_allow_html=True
 )
+
+st.divider()
+
+# --- INFORMASI UMUM ---
+st.markdown("## Informasi Umum")
+st.markdown(
+    """
+    <div style="text-align: justify; line-height: 1.8;">
+    <ul>
+        <li>Hasil perhitungan waktu salat menyesuaikan zona waktu lokasi (timezone) yang dideteksi secara otomatis berdasarkan koordinat lintang dan bujur.</li>
+        <li>Aplikasi menggunakan data ephemeris Skyfield (DE421) sehingga perhitungan posisi Matahari dilakukan secara astronomis.</li>
+        <li>Fitur <i>ihtiyath</i> bersifat opsional. Jika diaktifkan, nilai ihtiyath akan ditambahkan pada seluruh jadwal waktu salat.</li>
+        <li>Waktu Imsak ditampilkan secara otomatis dengan selisih 10 menit sebelum Subuh.</li>
+    </ul>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+st.divider()
+
 
 st.divider()
 
