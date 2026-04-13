@@ -19,11 +19,14 @@ Melalui penerapan metode komputasi astronomi menggunakan ***library Skyfield*** 
 
 col1, col2 = st.columns([2, 1])
 with col1:
-    ✨ Fitur Unggulan
-    - **Perhitungan Astronomis:** menggunakan ephemeris Skyfield (DE421) dan metode *find_discrete* untuk mendeteksi perubahan waktu salat berdasarkan posisi Matahari.
-    - **Berbasis Lokasi:** penentuan koordinat dapat dilakukan melalui klik peta (interaktif) atau input manual (lintang, bujur, dan elevasi).
-    - **Penyesuaian Zona Waktu Otomatis:** aplikasi mendeteksi timezone berdasarkan koordinat lokasi.
-    - **Edukasi Ilmu Falak:** menyediakan penjelasan ilmiah mengenai dasar astronomis penentuan awal waktu salat.
+    st.markdown("""
+✨ **Fitur Unggulan**
+
+- **Perhitungan Astronomis:** menggunakan ephemeris Skyfield (DE421) dan metode *find_discrete* untuk mendeteksi perubahan waktu salat berdasarkan posisi Matahari.
+- **Berbasis Lokasi:** penentuan koordinat dapat dilakukan melalui klik peta (interaktif) atau input manual (lintang, bujur, dan elevasi).
+- **Penyesuaian Zona Waktu Otomatis:** aplikasi mendeteksi timezone berdasarkan koordinat lokasi.
+- **Edukasi Ilmu Falak:** menyediakan penjelasan ilmiah mengenai dasar astronomis penentuan awal waktu salat.
+""")
     
 with col2:
     st.image("./assets/Logo_Website.png", width=100)  # Visual Matahari
