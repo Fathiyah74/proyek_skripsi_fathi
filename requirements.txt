@@ -4,6 +4,8 @@ numpy==1.26.4
 pandas
 folium
 streamlit-folium
-streamlit-javascript
 timezonefinder
 pytz
+geopy
+requests
+streamlit-js-eval
