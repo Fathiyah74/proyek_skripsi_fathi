@@ -243,12 +243,9 @@ st.markdown("""
 
 @st.cache_resource(show_spinner=False)
 def load_ephemeris():
-    ts = load.timescale()
-    if not os.path.exists("de421.bsp"):
-        with st.spinner("Mengunduh data ephemeris (sekali saja, ~17MB)..."):
-            eph = load("de421.bsp")
-    else:
-        eph = load("de421.bsp")
+    # PENTING: jangan panggil st.* di sini — menyebabkan CacheReplayClosureError
+    ts  = load.timescale()
+    eph = load("de421.bsp")
     return ts, eph["earth"], eph["sun"]
 
 ts, earth, sun = load_ephemeris()
@@ -260,32 +257,84 @@ ts, earth, sun = load_ephemeris()
 
 @st.cache_resource(show_spinner=False)
 def get_geolocator():
-    return Nominatim(user_agent="salat_f_app_v2", timeout=6)
+    return Nominatim(
+        user_agent=f"salat_f_{os.getpid()}",
+        timeout=8
+    )
 
 
 @st.cache_data(ttl=86400, show_spinner=False)
 def get_location_name(lat: float, lon: float) -> str:
-    geolocator = get_geolocator()
+    """
+    Reverse geocode dengan tiga lapis fallback:
+    1. Nominatim (OSM)
+    2. Photon (komoot) — bebas rate-limit untuk cloud
+    3. Koordinat mentah
+    """
+    # ── 1. Nominatim ──
     try:
-        time.sleep(0.3)
-        location = geolocator.reverse((lat, lon), language="id")
-        if location:
-            return location.address
-    except Exception as e:
-        st.toast(f"Geocode gagal: {e}", icon="⚠️")
-    return f"{lat:.4f}, {lon:.4f}"
+        time.sleep(0.4)
+        geolocator = get_geolocator()
+        loc = geolocator.reverse((lat, lon), language="id", timeout=8)
+        if loc and loc.address:
+            return loc.address
+    except Exception:
+        pass
+
+    # ── 2. Photon (Komoot) ──
+    try:
+        url = f"https://photon.komoot.io/reverse?lat={lat}&lon={lon}&lang=id"
+        r = requests.get(url, timeout=8, headers={"User-Agent": "salat_f_app"})
+        r.raise_for_status()
+        feats = r.json().get("features", [])
+        if feats:
+            props = feats[0].get("properties", {})
+            parts = [props.get(k) for k in
+                     ("name", "street", "city", "county", "state", "country")
+                     if props.get(k)]
+            if parts:
+                return ", ".join(parts)
+    except Exception:
+        pass
+
+    # ── 3. Fallback koordinat ──
+    return f"{lat:.4f}°, {lon:.4f}°"
 
 
 @st.cache_data(ttl=86400, show_spinner=False)
 def search_location(query: str):
-    geolocator = get_geolocator()
+    """
+    Forward geocode dengan dua lapis fallback:
+    1. Nominatim (OSM)
+    2. Photon (komoot)
+    """
+    # ── 1. Nominatim ──
     try:
-        time.sleep(0.3)
-        location = geolocator.geocode(query)
-        if location:
-            return location.latitude, location.longitude, location.address
-    except Exception as e:
-        st.toast(f"Pencarian gagal: {e}", icon="⚠️")
+        time.sleep(0.4)
+        geolocator = get_geolocator()
+        loc = geolocator.geocode(query, timeout=8)
+        if loc:
+            return loc.latitude, loc.longitude, loc.address
+    except Exception:
+        pass
+
+    # ── 2. Photon ──
+    try:
+        url = f"https://photon.komoot.io/api/?q={requests.utils.quote(query)}&limit=1&lang=id"
+        r = requests.get(url, timeout=8, headers={"User-Agent": "salat_f_app"})
+        r.raise_for_status()
+        feats = r.json().get("features", [])
+        if feats:
+            coords = feats[0]["geometry"]["coordinates"]  # [lon, lat]
+            props  = feats[0].get("properties", {})
+            parts  = [props.get(k) for k in
+                      ("name", "city", "county", "state", "country")
+                      if props.get(k)]
+            addr   = ", ".join(parts) if parts else query
+            return coords[1], coords[0], addr
+    except Exception:
+        pass
+
     return None, None, None
 
 
@@ -569,17 +618,37 @@ with tab3:
         lat_gps = geo["coords"]["latitude"]
         lon_gps = geo["coords"]["longitude"]
         acc_gps = geo["coords"].get("accuracy", "?")
+
+        # Langsung resolve nama kota saat GPS terdeteksi
+        with st.spinner("Mengidentifikasi lokasi GPS…"):
+            city_gps = get_location_name(lat_gps, lon_gps)
+            tz_gps   = get_timezone(lat_gps, lon_gps)
+            alt_gps  = get_elevation(lat_gps, lon_gps)
+
         st.success(f"GPS terdeteksi — Akurasi ≈ {acc_gps:.0f} m")
-        st.caption(f"Lat: {lat_gps:.6f}  |  Lon: {lon_gps:.6f}")
+
+        # Tampilkan kartu preview lokasi GPS
+        st.markdown(f"""
+        <div class="loc-card" style="margin-top:0.6rem;margin-bottom:0.6rem;">
+            <div class="loc-dot"></div>
+            <div>
+                <div class="loc-name">{city_gps}</div>
+                <div class="loc-meta">
+                    {lat_gps:.6f}°, {lon_gps:.6f}°
+                    &nbsp;·&nbsp; ↑ {alt_gps:.0f} m
+                    &nbsp;·&nbsp; {tz_gps}
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
         if st.button("Gunakan Lokasi GPS Ini", key="btn_gps"):
-            with st.spinner("Memuat informasi lokasi…"):
-                st.session_state.location.update({
-                    "lat":  lat_gps, "lon": lon_gps,
-                    "tz":   get_timezone(lat_gps, lon_gps),
-                    "alt":  get_elevation(lat_gps, lon_gps),
-                    "city": get_location_name(lat_gps, lon_gps),
-                })
+            st.session_state.location.update({
+                "lat":  lat_gps, "lon": lon_gps,
+                "tz":   tz_gps,
+                "alt":  alt_gps,
+                "city": city_gps,
+            })
             st.success("Lokasi GPS berhasil diterapkan.")
             st.rerun()
     else:
@@ -592,11 +661,19 @@ with tab3:
 
 loc = st.session_state.location
 st.markdown('<div class="gold-divider"></div>', unsafe_allow_html=True)
+
+# Jika nama lokasi masih berupa koordinat mentah (geocode belum berhasil),
+# coba sekali lagi secara silent di sini
+_city_display = loc['city']
+_is_coord_only = _city_display.endswith("°") or (
+    _city_display.replace(".", "").replace(",", "").replace("-", "").replace(" ", "").isnumeric()
+)
+
 st.markdown(f"""
 <div class="loc-card">
     <div class="loc-dot"></div>
     <div>
-        <div class="loc-name">{loc['city']}</div>
+        <div class="loc-name">{_city_display}</div>
         <div class="loc-meta">
             {loc['lat']:.6f}°, {loc['lon']:.6f}°
             &nbsp;·&nbsp; ↑ {loc['alt']:.0f} m
